@@ -1,4 +1,4 @@
 @echo off
-c:
-cd \Vagrant\boxes\webserver
+%~d0
+cd %~p0
 bash vagrant halt
