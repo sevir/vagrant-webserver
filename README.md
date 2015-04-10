@@ -13,3 +13,14 @@ This box is configured with:
 * Sphinx
 * Redis
 * Memcached
+
+###Windows configuration
+This box requires that you copy the Vagrantfile and the box into c:/Vagrant/boxes/
+
+After run inside the box folder the commandline
+> vagrant init
+> vagrant plugin install vagrant-winnfsd
+> start.cmd
+
+### MacOSX and Linux
+This box is configured with nfs share, please check the folders to share
