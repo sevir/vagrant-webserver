@@ -1,2 +1,2 @@
 @echo off
-vagrant halt
+bash vagrant halt

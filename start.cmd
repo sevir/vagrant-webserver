@@ -1,4 +1,4 @@
 @echo off
-vagrant up
-vagrant ssh
-vagrant suspend
+bash vagrant up
+bash vagrant ssh
+bash vagrant suspend
