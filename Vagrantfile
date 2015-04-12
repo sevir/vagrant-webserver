@@ -84,4 +84,11 @@ Vagrant.configure(2) do |config|
   #   sudo apt-get update
   #   sudo apt-get install -y apache2
   # SHELL
+
+  # Set the Timezone to something useful
+    config.vm.provision :shell, :inline => "echo \"Europe/Madrid\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata"
+ 
+    # Update the server
+    config.vm.provision :shell, :inline => "apt-get update --fix-missing"
+
 end
