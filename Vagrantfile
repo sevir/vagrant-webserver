@@ -81,5 +81,8 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
  
-  config.vm.provision :shell, path: "provisioning.sh"
+  config.vm.provision :shell, path: "tools/provisioning.sh"
+
+  # Run this script when the virtual machine is working
+  config.vm.provision :shell, path: "tools/run_on_start.sh", run: "always", privileged: false
 end
