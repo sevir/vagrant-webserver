@@ -25,10 +25,30 @@ After run inside the box folder the commandline
 ### MacOSX and Linux
 This box is configured with nfs share, please check the folders to share
 
+Edit the Vagrantfile and comment the lines
+
+> #config.winnfsd.uid = 1
+> #config.winnfsd.gid = 1
+
+Check your nfs share and change or comment the line:
+
+> config.vm.synced_folder "../../../", "/windows", type: "nfs"
+
+Finally change the lines below, comment dhcp and enable fixed ip
+> config.vm.network "private_network", ip: "192.168.33.10"
+> # config.vm.network "private_network", type: "dhcp"
+
 ### General SO steps
 Run first the initial provisioning with the vagrant machine started
 
 > vagrant provision
+
+Maybe you need regenerate your vagrant keys with:
+
+> cd tools
+> ssh-keygen -t rsa
+>   [ enter vagrant ]
+>   [ password empty ]
 
 ### SSH access
 Default credentials for SSH access are `vagrant` as user and `vagrant` as password.
