@@ -24,3 +24,9 @@ After run inside the box folder the commandline
 
 ### MacOSX and Linux
 This box is configured with nfs share, please check the folders to share
+
+### General SO steps
+Run first the initial provisioning with the vagrant machine started
+
+> vagrant provision
+
