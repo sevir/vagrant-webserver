@@ -22,6 +22,8 @@ After run inside the box folder the commandline
 > vagrant plugin install vagrant-winnfsd
 > start.cmd
 
+You need Cygwin openssh installed for ```vagrant ssh```
+
 ### MacOSX and Linux
 This box is configured with nfs share, please check the folders to share
 
