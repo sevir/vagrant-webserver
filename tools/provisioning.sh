@@ -1,10 +1,10 @@
 #!/bin/bash
 echo "Enabling default ssh key..."
-cat /vagrant/tools/vagrant.pub > /home/vagrant/.ssh/authorized_keys
+sudo cat /vagrant/tools/vagrant.pub > /home/vagrant/.ssh/authorized_keys
 echo "Copying bashrc config..."
-cat /vagrant/tools/bashrc >> /home/vagrant/.bashrc
+sudo cat /vagrant/tools/bashrc >> /home/vagrant/.bashrc
 echo "Updating timezone..."
-echo \"Europe/Madrid\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
+sudo echo \"Europe/Madrid\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
 echo "Updating package information..."
 sudo apt-get update --fix-missing
 echo "Downloading Composer"
