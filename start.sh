@@ -1,6 +1,6 @@
 #!/bin/bash
 script="$0"
 basename="$(dirname $script)"
-vagrant up
-vagrant ssh
-vagrant halt
+bash vagrant up
+bash vagrant ssh
+bash vagrant halt
