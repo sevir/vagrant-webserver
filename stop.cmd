@@ -1,2 +1,2 @@
 @echo off
-bash vagrant halt
+vagrant.exe halt

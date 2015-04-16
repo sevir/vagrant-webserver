@@ -3,5 +3,6 @@
 # Example .gitignore files: https://github.com/github/gitignore
 /bower_components/
 /node_modules/
+/providers/
 .vagrant
 webserver.box
