@@ -47,7 +47,7 @@ Vagrant.configure(2) do |config|
   # config.vm.synced_folder "c:/www", "/www"
 
  #NFS Shares
-  config.vm.synced_folder "../../../", "/windows", type: "nfs"
+  config.vm.synced_folder "c:/www", "/www", type: "nfs"
 
   config.winnfsd.uid = 1
   config.winnfsd.gid = 1
