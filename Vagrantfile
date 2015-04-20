@@ -43,8 +43,8 @@ Vagrant.configure(2) do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
-  Dir[File.expand_path('tools/fowarderd_ports/*.rb', File.dirname(__FILE__))].each do |file|
-    load file if File.exist?(file)
+  Dir[File.expand_path('tools/fowarded_ports/*.rb', File.dirname(__FILE__))].each do |fowardedfile|
+    eval(IO.read(fowardedfile), binding)
   end 
   
 
@@ -73,8 +73,8 @@ Vagrant.configure(2) do |config|
   # NFS share:
   # config.vm.synced_folder "c:/www", "/www", type: "nfs"
 
-  Dir[File.expand_path('tools/shares/*.rb', File.dirname(__FILE__))].each do |file|
-    load file if File.exist?(file)
+  Dir[File.expand_path('tools/shares/*.rb', File.dirname(__FILE__))].each do |shares|
+    eval(IO.read(shares), binding)
   end  
 
   if OS.windows?
