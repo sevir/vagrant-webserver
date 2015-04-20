@@ -4,5 +4,9 @@
 /bower_components/
 /node_modules/
 /providers/
+/tools/shares/*
+/tools/fowarded_ports/*
+!/tools/shares/default.rb
+!/tools/fowarded_ports/default.rb
 .vagrant
 webserver.box
