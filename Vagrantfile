@@ -1,6 +1,24 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+module OS
+    def OS.windows?
+        (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+    end
+
+    def OS.mac?
+        (/darwin/ =~ RUBY_PLATFORM) != nil
+    end
+
+    def OS.unix?
+        !OS.windows?
+    end
+
+    def OS.linux?
+        OS.unix? and not OS.mac?
+    end
+end
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -20,20 +38,24 @@ Vagrant.configure(2) do |config|
   # config.vm.box_check_update = false
   config.vm.box_url = "webserver.box"
 
-  config.ssh.private_key_path = "tools/vagrant"
+  config.ssh.private_key_path = "tools/ssh-keys/vagrant"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
-  config.vm.network "forwarded_port", guest: 80, host: 80
-  config.vm.network "forwarded_port", guest: 443, host: 443
-  config.vm.network "forwarded_port", guest: 10000, host: 10000
-  config.vm.network "forwarded_port", guest: 3306, host: 3306
+  Dir[File.expand_path('tools/fowarderd_ports/*.rb', File.dirname(__FILE__))].each do |file|
+    load file if File.exist?(file)
+  end 
+  
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   # config.vm.network "private_network", ip: "192.168.33.10"
-  config.vm.network "private_network", type: "dhcp"
+  if OS.windows?
+    config.vm.network "private_network", type: "dhcp"
+  else
+    config.vm.network "private_network", ip: "192.168.33.10"
+  end
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -44,13 +66,21 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
+  # Create files with the shares into tools/shares/shares.rb
+  # Example for content
+  # virtualmachine share:
   # config.vm.synced_folder "c:/www", "/www"
+  # NFS share:
+  # config.vm.synced_folder "c:/www", "/www", type: "nfs"
 
- #NFS Shares
-  config.vm.synced_folder "c:/www", "/www", type: "nfs"
+  Dir[File.expand_path('tools/shares/*.rb', File.dirname(__FILE__))].each do |file|
+    load file if File.exist?(file)
+  end  
 
-  config.winnfsd.uid = 1
-  config.winnfsd.gid = 1
+  if OS.windows?
+    config.winnfsd.uid = 1
+    config.winnfsd.gid = 1
+  end
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -81,8 +111,8 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
  
-  config.vm.provision :shell, path: "tools/provisioning.sh"
+  config.vm.provision :shell, path: "tools/provisioning/provisioning.sh"
 
   # Run this script when the virtual machine is working
-  config.vm.provision :shell, path: "tools/run_on_start.sh", run: "always", privileged: false
+  config.vm.provision :shell, path: "tools/provisioning/run_on_start.sh", run: "always", privileged: false
 end

@@ -1,0 +1,1 @@
+config.vm.synced_folder "c:/www", "/www", type: "nfs"
