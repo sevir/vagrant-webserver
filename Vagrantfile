@@ -107,7 +107,6 @@ Vagrant.configure(2) do |config|
      end
 
      vb.cpus = cpus
-     vb.customize ["modifyvm", :id, "--cpus", cpus]
 
      #Create tools/vm_custom.rb for overwriting vm configuration
      if File.file?("tools/vm_custom.rb")
