@@ -4,7 +4,7 @@ cat /vagrant/tools/provisioning/vagrant.pub > /home/vagrant/.ssh/authorized_keys
 echo "Copying bashrc config..."
 cat /vagrant/tools/provisioning/bashrc >> /home/vagrant/.bashrc
 echo "Updating timezone..."
-echo \"Europe/Madrid\" | sudo tee /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
+sudo sed -i 's/.*/Europe\/Madrid/g' /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
 echo "Updating package information..."
 sudo apt-get update --fix-missing
 echo "Downloading Composer"
