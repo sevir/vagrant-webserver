@@ -10,3 +10,4 @@
 !/tools/fowarded_ports/default.rb
 .vagrant
 webserver.box
+vm_custom.rb

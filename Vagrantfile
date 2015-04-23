@@ -87,24 +87,30 @@ Vagrant.configure(2) do |config|
   # Example for VirtualBox:
   #
   config.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--cpuexecutioncap", "80"]
   #   # Display the VirtualBox GUI when booting the machine
   #   vb.gui = true
   #
   #   # Customize the amount of memory on the VM:
      vb.memory = "1024"
-     #vb.memory = 2048
+     
      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
 
-     if OS.mac
+     if OS.mac?
       cpus = `sysctl -n hw.ncpu`.to_i
-     elseif OS.linux
+     elseif OS.linux?
       cpus = `nproc`.to_i
      else
       cpus = 2
      end
 
-     v.customize ["modifyvm", :id, "--cpus", cpus]
+     vb.cpus = cpus
+
+     #Create tools/vm_custom.rb for overwriting vm configuration
+     if File.file?("tools/vm_custom.rb")
+      eval(IO.read("tools/vm_custom.rb"), binding)
+     end
   end
   
   # View the documentation for the provider you are using for more
