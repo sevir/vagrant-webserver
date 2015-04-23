@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Enabling default ssh key..."
-cat /vagrant/tools/provisioning/vagrant.pub > /home/vagrant/.ssh/authorized_keys
+cat /vagrant/tools/ssh-keys/vagrant.pub > /home/vagrant/.ssh/authorized_keys
 echo "Copying bashrc config..."
 cat /vagrant/tools/provisioning/bashrc >> /home/vagrant/.bashrc
 echo "Updating timezone..."

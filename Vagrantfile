@@ -94,24 +94,29 @@ Vagrant.configure(2) do |config|
   #   # Customize the amount of memory on the VM:
      vb.memory = "1024"
      
-     vb.customize ["modifyvm", :id, "--cpuhotplug", "on"]
      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+
+     vb.customize ["modifyvm", :id, "--ioapic", "on"]
 
      if OS.mac?
       cpus = `sysctl -n hw.ncpu`.to_i
      elseif OS.linux?
       cpus = `nproc`.to_i
      else
-      cpus = 2
+      cpus = 1
      end
-
-     vb.cpus = cpus
 
      #Create tools/vm_custom.rb for overwriting vm configuration
      if File.file?("tools/vm_custom.rb")
       eval(IO.read("tools/vm_custom.rb"), binding)
      end
+
+     if cpus > 1
+     	vb.customize ["modifyvm", :id, "--ioapic", "on"]
+     end
+     vb.cpus = cpus
+     vb.customize ["modifyvm", :id, "--cpus"  , cpus  ]
   end
   
   # View the documentation for the provider you are using for more
