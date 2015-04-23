@@ -95,8 +95,18 @@ Vagrant.configure(2) do |config|
      #vb.memory = 2048
      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+
+     if OS.mac
+      cpus = `sysctl -n hw.ncpu`.to_i
+     elseif OS.linux
+      cpus = `nproc`.to_i
+     else
+      cpus = 2
+     end
+
+     v.customize ["modifyvm", :id, "--cpus", cpus]
   end
-  #
+  
   # View the documentation for the provider you are using for more
   # information on available options.
 
