@@ -17,3 +17,5 @@ sudo mv deployer.phar /usr/local/bin/dep
 sudo chmod +x /usr/local/bin/dep
 echo "Installing Bower"
 sudo npm install -g bower
+echo "Fixing PHP Timeout"
+sudo sed -i 's/\-pass\-header Authorization/\-pass\-header Authorization \-idle\-timeout 3600/g' /etc/apache2/mods-available/fastcgi.conf
