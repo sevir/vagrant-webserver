@@ -36,7 +36,10 @@ Vagrant.configure(2) do |config|
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
   # config.vm.box_check_update = false
-  config.vm.box_url = "webserver.box"
+
+  if File.file?("webserver.box")
+    config.vm.box_url = "webserver.box"
+   end
 
   config.ssh.private_key_path = "tools/ssh-keys/vagrant"
 
@@ -144,6 +147,10 @@ Vagrant.configure(2) do |config|
   # documentation for more information about their specific syntax and use.
  
   config.vm.provision :shell, path: "tools/provisioning/provisioning.sh"
+
+  Dir[File.expand_path('tools/provisioning/provisioning_*.sh', File.dirname(__FILE__))].each do |fowardedfile|
+    config.vm.provision :shell, path: fowardedfile
+  end 
 
   # Run this script when the virtual machine is working
   config.vm.provision :shell, path: "tools/provisioning/run_on_start.sh", run: "always", privileged: false
