@@ -40,6 +40,16 @@ Vagrant.configure(2) do |config|
 
   config.ssh.private_key_path = "tools/ssh-keys/vagrant"
 
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'" # avoids 'stdin: is not a tty' error.
+
+  config.ssh.private_key_path = ["#{ENV['HOME']}/.ssh/id_rsa","tools/ssh-keys/vagrant"]
+
+  config.vm.provision "shell", inline: <<-SCRIPT
+    printf "%s\n" "#{File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")}" >> /home/vagrant/.ssh/authorized_keys
+    printf "%s\n" "#{File.read("tools/ssh-keys/vagrant")}" >> /home/vagrant/.ssh/authorized_keys
+    chown -R vagrant:vagrant /home/vagrant/.ssh
+  SCRIPT
+
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
