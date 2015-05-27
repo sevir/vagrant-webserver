@@ -36,9 +36,22 @@ Vagrant.configure(2) do |config|
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
   # config.vm.box_check_update = false
-  config.vm.box_url = "webserver.box"
+
+  if File.file?("webserver.box")
+    config.vm.box_url = "webserver.box"
+   end
 
   config.ssh.private_key_path = "tools/ssh-keys/vagrant"
+
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'" # avoids 'stdin: is not a tty' error.
+
+  config.ssh.private_key_path = ["#{ENV['HOME']}/.ssh/id_rsa","tools/ssh-keys/vagrant"]
+
+  config.vm.provision "shell", inline: <<-SCRIPT
+    printf "%s\n" "#{File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")}" >> /home/vagrant/.ssh/authorized_keys
+    printf "%s\n" "#{File.read("tools/ssh-keys/vagrant")}" >> /home/vagrant/.ssh/authorized_keys
+    chown -R vagrant:vagrant /home/vagrant/.ssh
+  SCRIPT
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
@@ -134,6 +147,10 @@ Vagrant.configure(2) do |config|
   # documentation for more information about their specific syntax and use.
  
   config.vm.provision :shell, path: "tools/provisioning/provisioning.sh"
+
+  Dir[File.expand_path('tools/provisioning/provisioning_*.sh', File.dirname(__FILE__))].each do |fowardedfile|
+    config.vm.provision :shell, path: fowardedfile
+  end 
 
   # Run this script when the virtual machine is working
   config.vm.provision :shell, path: "tools/provisioning/run_on_start.sh", run: "always", privileged: false
