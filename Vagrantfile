@@ -101,7 +101,7 @@ Vagrant.configure(2) do |config|
 
      if OS.mac?
       cpus = `sysctl -n hw.ncpu`.to_i
-     elseif OS.linux?
+     elsif OS.linux?
       cpus = `nproc`.to_i
      else
       cpus = 1
