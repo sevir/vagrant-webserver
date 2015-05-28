@@ -28,6 +28,13 @@ You need Cygwin openssh installed for `vagrant ssh`
 ### MacOSX and Linux
 This box is configured with nfs share, please check the folders to share
 
+If first provision faults please check your $HOME/.ssh/config for:
+
+    Host 127.0.0.1
+      StrictHostKeyChecking no
+      UserKnownHostsfile=/dev/null
+      IdentitiesOnly yes
+
 ### SSH access
 Default credentials for SSH access are `vagrant` as user and `vagrant` as password.
 
