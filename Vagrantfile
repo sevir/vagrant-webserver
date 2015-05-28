@@ -1,6 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# For system detection
 module OS
     def OS.windows?
         (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
@@ -37,16 +38,21 @@ Vagrant.configure(2) do |config|
   # `vagrant box outdated`. This is not recommended.
   # config.vm.box_check_update = false
 
+  # Check if box is downloaded with the conf else download from hashicorp
   if File.file?("webserver.box")
     config.vm.box_url = "webserver.box"
    end
 
-  config.ssh.private_key_path = "tools/ssh-keys/vagrant"
-
+  # SSH configuration
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'" # avoids 'stdin: is not a tty' error.
-
+  # Prevent insert insecure key
+  config.ssh.insert_key = false
+  # Set personal key or vagrant key
   config.ssh.private_key_path = ["#{ENV['HOME']}/.ssh/id_rsa","tools/ssh-keys/vagrant"]
+  # Force agent over SSH
+  config.ssh.forward_agent = true
 
+  # Insert public keys
   config.vm.provision "shell", inline: <<-SCRIPT
     printf "%s\n" "#{File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")}" >> /home/vagrant/.ssh/authorized_keys
     printf "%s\n" "#{File.read("tools/ssh-keys/vagrant")}" >> /home/vagrant/.ssh/authorized_keys
@@ -56,6 +62,8 @@ Vagrant.configure(2) do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
+
+  # Simply creating a copy of  tools/fowarded_ports/default.rb and enabling the ports
   Dir[File.expand_path('tools/fowarded_ports/*.rb', File.dirname(__FILE__))].each do |fowardedfile|
     eval(IO.read(fowardedfile), binding)
   end 
@@ -69,11 +77,6 @@ Vagrant.configure(2) do |config|
   else
     config.vm.network "private_network", ip: "192.168.33.10"
   end
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -90,6 +93,7 @@ Vagrant.configure(2) do |config|
     eval(IO.read(shares), binding)
   end  
 
+  # Enable NFS plugin for Windows
   if OS.windows?
     config.winnfsd.uid = 1
     config.winnfsd.gid = 1
@@ -112,6 +116,7 @@ Vagrant.configure(2) do |config|
 
      vb.customize ["modifyvm", :id, "--ioapic", "on"]
 
+     # Set cores in OSX and Linux
      if OS.mac?
       cpus = `sysctl -n hw.ncpu`.to_i
      elsif OS.linux?
@@ -148,6 +153,7 @@ Vagrant.configure(2) do |config|
  
   config.vm.provision :shell, path: "tools/provisioning/provisioning.sh"
 
+  # Custom provisioning
   Dir[File.expand_path('tools/provisioning/provisioning_*.sh', File.dirname(__FILE__))].each do |fowardedfile|
     config.vm.provision :shell, path: fowardedfile
   end 
