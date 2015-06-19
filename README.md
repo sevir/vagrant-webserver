@@ -62,7 +62,7 @@ Edit `/etc/default/cachefilesd` and uncomment the line `RUN=yes`.
 Then, update your Vagrantfile to add a new mount option, `fsc`, as follows:
 
 ```
-config.vm.synced_folder "/your/folder", "/vagrant/folder", type: "nfs", mount_options: [..., 'fsc']
+config.vm.synced_folder "/your/folder", "/vagrant/folder", type: "nfs", mount_options: ["nolock,vers=3,udp,noatime,fsc"]
 ```
 
 Reload your vagrant machine. You can check that `cachefilesd` is actually working by browsing the cache directory inside the vagrant machine:
