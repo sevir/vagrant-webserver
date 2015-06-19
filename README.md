@@ -38,3 +38,26 @@ Copy them to the tools directory with the names `vagrant` and `vagrant.pub`.
 `ssh-copy-id -i tools/vagrant.pub vagrant@localhost -p 2222`
 
 Now you should have unatended access via ssh. To test it, run `vagrant ssh`. If you have any problems, check your access with `ssh -i tools/vagrant vagrant@localhost -p 2222`.
+
+
+### Improve NFS on Windows systems
+Ubuntu systems have a built in tool that caches access to NFS disks. As the NFS system for Windows is not a native solution, its performance is not as good as expected. Setting up `cachefilesd` partially solves that. 
+
+```
+sudo apt-get install cachefilesd
+```
+
+Edit `/etc/default/cachefilesd` and uncomment the line `RUN=yes`.
+
+Then, update your Vagrantfile to add a new mount option, `fsc`, as follows:
+
+```
+config.vm.synced_folder "/your/folder", "/vagrant/folder", type: "nfs", mount_options: [..., 'fsc']
+```
+
+Reload your vagrant machine. You can check that `cachefilesd` is actually working by browsing the cache directory inside the vagrant machine:
+
+```
+cd /var/cache/fscache/
+sudo du -sh
+```
