@@ -113,6 +113,10 @@ Vagrant.configure(2) do |config|
      
      vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
      vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+     # https://github.com/mitchellh/vagrant/issues/690
+     # http://www.virtualbox.org/manual/ch06.html#nat-limitations
+     # --nictype<1-N> Am79C970A | Am79C973 | 82540EM | 82543GC | 82545EM | virtio
+     vb.customize ["modifyvm", :id, "--nictype1", "82543GC"]
 
      vb.customize ["modifyvm", :id, "--ioapic", "on"]
 
