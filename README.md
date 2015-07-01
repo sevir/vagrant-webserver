@@ -53,13 +53,7 @@ Now you should have unatended access via ssh. To test it, run `vagrant ssh`. If 
 ### Improve NFS on Windows systems
 Ubuntu systems have a built in tool that caches access to NFS disks. As the NFS system for Windows is not a native solution, its performance is not as good as expected. Setting up `cachefilesd` partially solves that. 
 
-```
-sudo apt-get install cachefilesd
-```
-
-Edit `/etc/default/cachefilesd` and uncomment the line `RUN=yes`.
-
-Then, update your Vagrantfile to add a new mount option, `fsc`, as follows:
+Update your Vagrantfile to add a new mount option, `fsc`, as follows:
 
 ```
 config.vm.synced_folder "/your/folder", "/vagrant/folder", type: "nfs", mount_options: ["nolock,vers=3,udp,noatime,fsc"]
