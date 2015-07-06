@@ -139,8 +139,11 @@ Vagrant.configure(2) do |config|
      end
      vb.cpus = cpus
      vb.customize ["modifyvm", :id, "--cpus"  , cpus  ]
+
+     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/vagrant","1"]
   end
-  
+ 
+
   # View the documentation for the provider you are using for more
   # information on available options.
 
