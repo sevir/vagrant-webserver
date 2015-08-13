@@ -55,7 +55,7 @@ Vagrant.configure(2) do |config|
   # Insert public keys
   config.vm.provision "shell", inline: <<-SCRIPT
     printf "%s\n" "#{File.read("#{ENV['HOME']}/.ssh/id_rsa.pub")}" >> /home/vagrant/.ssh/authorized_keys
-    printf "%s\n" "#{File.read("tools/ssh-keys/vagrant")}" >> /home/vagrant/.ssh/authorized_keys
+    printf "%s\n" "#{File.read("tools/ssh-keys/vagrant.pub")}" >> /home/vagrant/.ssh/authorized_keys
     chown -R vagrant:vagrant /home/vagrant/.ssh
   SCRIPT
 
@@ -94,9 +94,30 @@ Vagrant.configure(2) do |config|
   end  
 
   # Enable NFS plugin for Windows
-  if OS.windows?
+  if Vagrant.has_plugin?("vagrant-ntfsd")
     config.winnfsd.uid = 1
     config.winnfsd.gid = 1
+  end
+
+  if Vagrant.has_plugin?("vagrant-cachier")
+    # Configure cached packages to be shared between instances of the same base box.
+    # More info on the "Usage" link above
+    config.cache.scope = :box
+
+    # OPTIONAL: If you are using VirtualBox, you might want to use that to enable
+    # NFS for shared folders. This is also very useful for vagrant-libvirt if you
+    # want bi-directional sync
+    
+    if !OS.windows?
+      config.cache.synced_folder_opts = {
+        type: :nfs,
+        # The nolock option can be useful for an NFSv3 client that wants to avoid the
+        # NLM sideband protocol. Without this option, apt-get might hang if it tries
+        # to lock files needed for /var/cache/* operations. All of this can be avoided
+        # by using NFSv4 everywhere. Please note that the tcp option is not the default.
+        mount_options: ['rw', 'vers=3', 'nolock','tcp']
+      }
+    end
   end
 
   # Provider-specific configuration so you can fine-tune various
